@@ -5,9 +5,6 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-/**
- * Created by Jacob on 2015-6-7.
- */
 public class TaxiFeeCalculatorTest {
 
 
@@ -50,7 +47,7 @@ public class TaxiFeeCalculatorTest {
     }
 
     private float getPrice(int hour, int miles) {
-        return new TaxiFeeCalculator(hour, miles).getPrice();
+        return new refactor.TaxiFeeCalculator(hour, miles).getPrice();
     }
 
     // todo: this is a bug.
