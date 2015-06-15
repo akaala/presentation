@@ -41,29 +41,35 @@ Applications:
 
 Producer
 
-: provides easy-to-use API to client.(Both Synchronous and Asynchronous API).
+    provides easy-to-use API to client.(Both Synchronous and Asynchronous API).
 
 Consumer
-: client extend Consumer API (need register before using) to consume messages.
+
+    client extend Consumer API (need register before using) to consume messages.
 
 Broker
-: some kind of center of Hermes. Them receive messages from producer, then
-write them to Storage. Also Consumers connect to Brokers when consuming.
+
+    some kind of center of Hermes. Them receive messages from producer, then
+    write them to Storage. Also Consumers connect to Brokers when consuming.
 
 Storage
-: can be Mysql or Kafka to persistent the data.
+
+    can be Mysql or Kafka to persistent the data.
 
 MetaServer
-: centralized configure center.
+
+    centralized configure center.
 
 Portal
-: manage topics, auditing producer and consumer, monitoring applications,
-configure settings, and other maintain work.
 
-Topic:
-: basic subscription term. Producer produce one certain Topic, and Consumer
-could consume one or more Topics (by wildcard subscription). What's more, a
-Topic could divided into several Partitions, while help to scale up Horizontal.
+    manage topics, auditing producer and consumer, monitoring applications,
+    configure settings, and other maintain work.
+
+Topic
+
+    basic subscription term. Producer produce one certain Topic, and Consumer
+    could consume one or more Topics (by wildcard subscription). What's more, a
+    Topic could divided into several Partitions, while help to scale up Horizontal.
 
 
                                            +---------+
@@ -71,7 +77,7 @@ Topic could divided into several Partitions, while help to scale up Horizontal.
      |Producer1|  ...  |ProducerN|         |         |
      +---------+       +------+--+         +---------+
                               |            |
-     Produce Request Meta     |     Portal Manage Meta           ?
+     Produce Request Meta     |     Portal Manage Meta
                               |            |
           +----------------+  +----->  +---v-----+
           |                | Sync      |  Meta   |
@@ -101,7 +107,7 @@ and also take good reference on Kafka Architecture.
           | Broker Cluster |
           |       Zookeeper|
           +--+-------------+
-             ^           ^+
+             ^            ^
              |            |
              |            |
     +--------+--+       +-+---------+
