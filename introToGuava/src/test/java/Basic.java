@@ -5,7 +5,6 @@ import com.google.common.util.concurrent.Callables;
 import org.junit.Before;
 import org.junit.Test;
 
-import javax.xml.bind.PrintConversionEvent;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
@@ -29,7 +28,7 @@ public class Basic {
         map.put("1ai", "qing");
         map.put("2ai", "zong");
 
-        System.out.println(Joiner.on("").withKeyValueSeparator("--").join(map));
+        System.out.println(Joiner.on("|").withKeyValueSeparator("--").join(map));
 
         // same to Splitter.
     }
@@ -37,36 +36,36 @@ public class Basic {
     /**
      * Functional Programming...
      */
-    class IntToString implements Function<Integer, String> {
+    class IntToStringFunction implements Function<Integer, String> {
 
         public String apply(Integer input) {
             return String.valueOf(input);
         }
     }
 
-    class StringToInt implements Function<String, Integer> {
+    class StringToIntFunction implements Function<String, Integer> {
 
         public Integer apply(String input) {
             return Integer.parseInt(input);
         }
     }
 
-    class IntIsEven implements Predicate<Integer> {
+    class IntIsEvenPredicate implements Predicate<Integer> {
 
         public boolean apply(Integer input) {
             return input % 2 == 0;
         }
     }
 
-    class IntLessThan10 implements Predicate<Integer> {
+    class IntLessThan10Predicate implements Predicate<Integer> {
 
         public boolean apply(Integer input) {
             return input < 10;
         }
     }
 
-    Predicate<Integer> evanAndLessThan10 = Predicates.and(new IntIsEven(), new IntLessThan10());
-    Predicate<String> evenStrings = Predicates.compose(new IntIsEven(), new StringToInt());
+    Predicate<Integer> evanAndLessThan10 = Predicates.and(new IntIsEvenPredicate(), new IntLessThan10Predicate());
+    Predicate<String> evenStrings = Predicates.compose(new IntIsEvenPredicate(), new StringToIntFunction());
 
 
     /**
@@ -90,12 +89,12 @@ public class Basic {
     @Test
     public void functionAndList() {
         // filter
-        System.out.println(Joiner.on(", ").join(FluentIterable.from(ints).filter(new IntIsEven())));
+        System.out.println(Joiner.on(", ").join(FluentIterable.from(ints).filter(new IntIsEvenPredicate())));
         System.out.println(Joiner.on(", ").join(FluentIterable.from(ints).filter(
-                Predicates.and(new IntIsEven(), new IntLessThan10()))));
+                Predicates.and(new IntIsEvenPredicate(), new IntLessThan10Predicate()))));
 
         // mapping
-        System.out.println(Joiner.on(", ").join(FluentIterable.from(strings).transform(new StringToInt())));
+        System.out.println(Joiner.on(", ").join(FluentIterable.from(strings).transform(new StringToIntFunction())));
     }
 
     @Test
