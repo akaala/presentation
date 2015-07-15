@@ -22,8 +22,14 @@ public class Basic {
         strings.add(null);
         strings.add("three");
         strings.add("four");
-        System.out.println(Joiner.on("|").useForNull("ThisIsANull").join(strings));
 
+        String s = Joiner.on("|").useForNull("Null").join(strings);
+
+        for (String s1 : Splitter.on("|").splitToList(s)) {
+            System.out.println(s1);
+        }
+//        System.out.println(Joiner.on("|").useForNull("ThisIsANull").join(strings));
+//
         Map<String, String> map = new HashMap<String, String>();
         map.put("1ai", "qing");
         map.put("2ai", "zong");
@@ -89,24 +95,39 @@ public class Basic {
     @Test
     public void functionAndList() {
         // filter
-        System.out.println(Joiner.on(", ").join(FluentIterable.from(ints).filter(new IntIsEvenPredicate())));
-        System.out.println(Joiner.on(", ").join(FluentIterable.from(ints).filter(
-                Predicates.and(new IntIsEvenPredicate(), new IntLessThan10Predicate()))));
+        FluentIterable.from(ints).filter(new IntIsEvenPredicate()).filter(new IntLessThan10Predicate());
+
+//        System.out.println(Joiner.on(", ").join(FluentIterable.from(ints).filter(new IntLessThan10Predicate())));
+
+//
+//        System.out.println(Joiner.on(", ").join(FluentIterable.from(ints).filter(
+//                Predicates.or(new IntIsEvenPredicate(), new IntLessThan10Predicate()))));
 
         // mapping
         System.out.println(Joiner.on(", ").join(FluentIterable.from(strings).transform(new StringToIntFunction())));
+//        FluentIterable.from(strings).transform(new StringToIntFunction());
     }
 
     @Test
     public void maps() {
         List<String> strings2 = Lists.newArrayList("1", "2", "3", "4", "5");
+        List<Integer> inits = Lists.newArrayList(1,2,3,4,5);
+        ImmutableMap<Integer, Integer> mmmm = Maps.toMap(inits, new Function<Integer, Integer>() {
+            public Integer apply(Integer input) {
+                return  input* input;
+            }
+        });
+
+//        System.out.println(Joiner.on(", ").withKeyValueSeparator(":").join(mmmm));
+
         Map<Integer, String> intMap = Maps.uniqueIndex(strings2, new Function<String, Integer>() {
             public Integer apply(String input) {
+
                 return Integer.parseInt(input);
             }
         });
 
-        System.out.println(Joiner.on(", ").withKeyValueSeparator(":").join(intMap));
+//        System.out.println(Joiner.on(", ").withKeyValueSeparator(":").join(intMap));
         ImmutableMap<String, Integer> immutableIntMap = Maps.toMap(strings2, new Function<String, Integer>() {
             public Integer apply(String input) {
                 return Integer.parseInt(input);
@@ -114,9 +135,9 @@ public class Basic {
         });
 
         System.out.println(Joiner.on(", ").withKeyValueSeparator(":").join(immutableIntMap));
-
-        // transform
-
+//
+//        // transform
+//
         Map<Integer, Price> prices = Maps.transformEntries(intMap, new Maps.EntryTransformer<Integer, String, Price>() {
             public Price transformEntry(Integer key, String value) {
                 return new Price(key, value);
@@ -134,6 +155,7 @@ public class Basic {
         multiMap.put(1, "2");
         multiMap.put(99, "99");
 
+
         for (Integer key : multiMap.keySet()) {
             for (String s : multiMap.get(key)) {
                 System.out.println(String.format("Key:%d, Values:%s", key, s));
@@ -147,9 +169,13 @@ public class Basic {
         BiMap<String, String> biMap = HashBiMap.create();
         biMap.put("ai1", "qing");
         biMap.put("ai2", "zong");
-        biMap.forcePut("ai3", "zong");
+        biMap.forcePut("ai1", "zong");
+        for (Map.Entry<String, String> entry : biMap.inverse().entrySet()) {
+//            System.out.println(String.format("Key:%s, Values:%s", entry.getKey(), entry.getValue()));
+        }
         for (Map.Entry<String, String> entry : biMap.inverse().entrySet()) {
             System.out.println(String.format("Key:%s, Values:%s", entry.getKey(), entry.getValue()));
+
         }
     }
 
@@ -158,9 +184,12 @@ public class Basic {
      */
     @Test
     public void cache() throws Exception {
+
+
         LoadingCache<String, Price> priceCache =
                 CacheBuilder.newBuilder()
                         .expireAfterAccess(1L, TimeUnit.SECONDS)
+                        .expireAfterWrite(1L, TimeUnit.SECONDS)
                         .removalListener(new RemovalListener<String, Price>() {
                             public void onRemoval(RemovalNotification<String, Price> notification) {
                                 System.out.println(String.format("==Remove: Key:%s, Values:%s",
@@ -170,9 +199,12 @@ public class Basic {
                         .build(new CacheLoader<String, Price>() {
                             @Override
                             public Price load(String key) throws Exception {
+//                                return loadFromFile(key);
                                 return new Price(Integer.parseInt(key), key);
                             }
                         });
+
+
 
         LoadingCache<String, Price> priceCache2 = CacheBuilder
                 .newBuilder()
@@ -185,10 +217,11 @@ public class Basic {
                 }));
 
         priceCache.get("1");
-//        priceCache.put("1", new Price(1, "1"));
+
+        priceCache.put("2", new Price(2, "2"));
         Thread.sleep(3100);
         priceCache.get("1");
-        Callable<String> value = Callables.returning("init value");
+//        Callable<String> value = Callables.returning("init value");
 
     }
 
